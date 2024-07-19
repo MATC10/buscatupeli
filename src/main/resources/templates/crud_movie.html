@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Movies</title>
+
+    <!-- EL CSS-->
+    <link rel="stylesheet" type="text/css" href="/css/crudmovies.css" media="screen" />
+
+    <!--El script del boostrap puesto con el fragments-->
+    <div th:insert="components/fragments :: head"></div>
+
+
+</head>
+<body>
+<header>
+
+    <!-- Navbar content puesto con el fragments -->
+    <div th:insert="~{components/fragments :: nav_bar_cruds}"></div>
+</header>
+
+<div class="container">
+    <h1 class="mb-3 animate__animated animate__jello">Listado de películas</h1>
+
+    <a href="/crud/movies/add" class="btn btn-success mb-3">Añadir películas</a>
+
+
+    <!---------------------------------------------------------------->
+    <!-- COMIENZA EL BUSCADOR DE PELÍCULAS (con HTML y JS)-->
+    <div class="search-area">
+        <input type="text" id="movieSearch" placeholder="Buscar películas..." list="movieList">
+        <button id="modifyButton" class="btn btn-primary mb-3">Modificar película</button>
+    </div>
+    <datalist id="movieList"></datalist>
+
+    <script>
+        var movieSearch = document.getElementById('movieSearch');
+        var movieList = document.getElementById('movieList');
+        var modifyButton = document.getElementById('modifyButton');
+
+        movieSearch.addEventListener('input', function() {
+            var title = movieSearch.value;
+            if (title.length >= 5) {
+                fetch('/search?title=' + title)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Ordenar los títulos de las películas por longitud en orden ascendente
+                        data.sort((a, b) => a.title.length - b.title.length);
+                        movieList.innerHTML = data.map(movie => '<option value="' + movie.title + '">').join('');
+                    });
+            }
+        });
+
+        movieSearch.addEventListener('change', function() {
+            var title = movieSearch.value;
+            fetch('/search?title=' + title)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        movieSearch.value = data[0].title;
+                    }
+                });
+        });
+
+        function redirectToUpdatePage() {
+            var title = movieSearch.value;
+            fetch('/search?title=' + title)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        window.location.href = '/crud/movies/update/' + data[0].id;
+                    }
+                });
+        }
+
+        movieSearch.addEventListener('keydown', function(event) {
+            if (event.keyCode === 13) {
+                redirectToUpdatePage();
+                event.preventDefault();
+            }
+        });
+
+        modifyButton.addEventListener('click', function() {
+            redirectToUpdatePage();
+        });
+    </script>
+
+    <!---------------------------------------------------------------->
+    <!-- COMIENZA LA TABLA DE FORMULARIO-->
+
+
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Título</th>
+                <th scope="col">Géneros</th>
+                <th scope="col">Resumen</th>
+                <th scope="col">Fecha de lanzamiento</th>
+                <th scope="col">Puntuación media</th>
+                <th scope="col">Votos</th>
+                <th scope="col">Póster</th>
+                <th scope="col">Imagen de fondo</th>
+                <th scope="col">Adulto</th>
+                <th scope="col">Idioma original</th>
+                <th scope="col">Título original</th>
+                <th scope="col">Popularidad</th>
+                <th scope="col">Video</th>
+                <th scope="col">Modificar</th>
+                <th scope="col">Borrar</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="movie:${listMovies}">
+                <td th:text="${movie.id}"></td>
+                <td th:text="${movie.title}"></td>
+                <td>
+                    <ul th:each="genre : ${movie.genres}">
+                        <li th:text="${genre.name}"></li>
+                    </ul>
+                </td>
+                <td th:text="${movie.overview.length() < 25 ? movie.overview.substring(0, movie.overview.length()) : movie.overview.substring(0, 25)}"></td>
+                <td th:text="${movie.releaseDate}"></td>
+                <td th:text="${movie.voteAverage}"></td>
+                <td th:text="${movie.voteCount}"></td>
+                <td><img th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}" style="height:2cm;"></td>
+                <td><img th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.backdropPath}}" style="height:2cm;"></td>
+                <td th:text="${movie.adult}"></td>
+                <td th:text="${movie.originalLanguage}"></td>
+                <td th:text="${movie.originalTitle}"></td>
+                <td th:text="${movie.popularity}"></td>
+                <td th:text="${movie.video}"></td>
+                <td>
+                    <a th:href="'/crud/movies/update/' + ${movie.id}" class="btn btn-primary">Modificar</a>
+                </td>
+                <td>
+                    <a th:href="'/crud/movies/delete/' + ${movie.id}" class="btn btn-danger"  onclick="return confirm('¿Estás seguro de que quieres borrar?')">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:insert="components/fragments :: paginator"></div>
+</div>
+
+<br>
+
+<div id="centered-content">
+    <h2>Obtener nuevas películas de la API TMDb</h2>
+    <a href="/crud/movies/getMoviesFromAPI/novedades" class="btn btn-danger mb-3" onclick="return confirm('¡CUIDADO! Esto podría causar lentitud en la página e incluso caídas de la misma. Ten en cuenta que este proceso puede tardar, por lo que es recomendable hacerlo mientras la web no se usa o hay poca actividad.')">Obtener novedades en castellano</a>
+    <a href="/crud/movies/getMoviesFromAPI/spanish" class="btn btn-danger mb-3" onclick="return confirm('¡CUIDADO! Esto podría causar lentitud en la página e incluso caídas de la misma. Ten en cuenta que este proceso puede tardar, por lo que es recomendable hacerlo mientras la web no se usa o hay poca actividad.')">Novedades con lenguaje original en español</a>
+</div>
+
+    <div th:insert="components/fragments :: footer"></div>
+</body>
+</html>

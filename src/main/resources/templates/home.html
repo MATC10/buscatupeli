@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Busca tu peli</title>
+
+    <!--El script del boostrap puesto con el fragments-->
+    <div th:insert="~{components/fragments :: head}"></div>
+
+    <!-- Vinculación del archivo CSS externo-->
+    <link rel="stylesheet" type="text/css" href="/css/home.css" media="screen" />
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Barra lateral de navegación -->
+        <div class="col-md-2 d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <form th:action="@{/search/tropes/movies}" method="post">
+                    <ul class="nav flex-column">
+                        <li th:each="genre : ${genres}" class="nav-item">
+                            <a class="nav-link dropdown-toggle nav-link-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${genre.name}">                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li th:each="trope : ${genre.tropes}">
+                                    <input type="checkbox" th:value="${trope.id}" th:name="tropeIds" th:id="${'trope' + trope.id}">
+                                    <label class="label-large" th:for="${'trope' + trope.id}" th:text="${trope.name}"></label>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <button type="submit" class="button-margin">Buscar por clichés</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <header>
+                <!-- Navbar content puesto con el fragments -->
+                <div th:insert="~{components/fragments :: nav_bar_cruds}"></div>
+            </header>
+
+
+            <!-- BUSCADOR DE PELÍCULAS -->
+            <div class="d-flex justify-content-center align-items-center" id="b">
+                <div class="recuadro bg-light p-2 rounded shadow" id="a">
+                    <form th:action="@{/home/search/found}" method="get" class="d-flex">
+                        <input type="text" id="movieSearch" name="title" placeholder="Buscar películas por nombre..." list="movieList" class="form-control me-2" required>
+                        <button id="searchButton" class="btn btn-primary mb-3" type="submit">Buscar</button>
+                    </form>
+                    <datalist id="movieList"></datalist>
+                </div>
+            </div>
+
+            <!-- NOVEDADES -->
+            <section id="grid-novedades">
+                <div id="titulo-novedades">
+                    <h1>Sección de novedades</h1>
+                </div>
+                <a th:each="movie : ${movies}" th:href="@{/detail/{id}(id=${movie.id})}" class="grid-item" style="text-decoration: none; color: inherit;">
+                    <img th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}">
+                    <div class="titulo-autor">
+                        <h2 th:text="${movie.title}"></h2>
+                    </div>
+                    <div class="descripcion">
+                        <p th:text="${movie.overview}"></p>
+                    </div>
+                </a>
+            </section>
+
+            <div th:insert="components/fragments :: footer"></div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

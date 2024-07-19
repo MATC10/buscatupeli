@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<th:block th:fragment="head">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!--esto de abajo es para animate css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</th:block>
+
+
+
+
+<th:block th:fragment="nav_bar_cruds">
+    <div class="container">
+        <header class="d-flex justify-content-center py-3">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a href="/home">
+                        <img th:src="@{/uploads/buscatupeli.png}" alt="Busca Tu Peli" />
+                    </a>
+                </li>
+                <li class="nav-item" th:if="${isAdmin}"><a href="/crud/movies" class="nav-link" aria-current="page" style="font-weight: bold">CRUD Películas</a></li>
+                <li class="nav-item" th:if="${isAdmin}"><a href="/tropes" class="nav-link" aria-current="page" style="font-weight: bold">CRUD Clichés</a></li>
+                <li class="nav-item" th:if="${isAdmin}"><a href="/users" class="nav-link" aria-current="page" style="font-weight: bold">CRUD Usuarios</a></li>
+                <li class="nav-item" style="margin-left: auto;">
+                    <a href="/perfil">
+                        <img th:if="${isLogged}" th:src="@{${userImage}}" alt="Imagen de perfil" style="width: 50px; height: 50px; border-radius: 50%;" />
+                    </a>
+                </li>
+                <li class="nav-item" th:if="${!isLogged}" style="margin-left: auto; font-weight: bold">
+                    <a href="/login" class="nav-link" aria-current="page">Iniciar sesión</a>
+                </li>
+                <li class="nav-item" th:if="${isLogged}" style="margin-left: auto; font-weight: bold">
+                    <a href="/perfil" class="nav-link" aria-current="page">Mi Perfil</a>
+                </li>
+                <li class="nav-item" th:if="${isLogged}">
+                    <a href="/home" class="nav-link" aria-current="page" th:href="@{/logout}" style="color:darkred; font-weight: bold">Logout</a>
+                </li>
+            </ul>
+        </header>
+    </div>
+</th:block>
+
+
+
+<nav th:fragment="paginator">
+    <ul class="pagination">
+        <li class="page-item" th:class="${page.first ? 'page-item disabled' : 'page-item'}">
+            <span class="page-link" th:if="${page.first}">Primera</span>
+            <a class="page-link" th:if="${not page.first}" th:href="@{${page.url}(page=0)}">Primera</a>
+        </li>
+        <li class="page-item" th:class="${not page.hasPrevious ? 'page-item disabled' : 'page-item'}">
+            <span class="page-link" th:if="not page.hasPrevious">Anterior</span>
+            <a class="page-link" th:if="${page.hasPrevious}" th:href="@{${page.url}(page=${page.paginaActual-2})}">Anterior</a>
+        </li>
+        <li class="page-item" th:each="item: ${page.paginas}" th:class="${item.actual ? 'page-item active' : 'page-item'}">
+            <span class="page-link disabled" th:if="${item.actual}" th:text="${item.numero}"></span>
+            <a class="page-link" th:if="${not item.actual}" th:href="@{${page.url}(page=${item.numero-1})}" th:text="${item.numero}"></a>
+        </li>
+        <li class="page-item" th:class="${not page.hasNext ? 'page-item disabled' : 'page-item'}">
+            <span class="page-link" th:if="not page.hastNext">Siguiente</span>
+            <a class="page-link" th:if="${page.hasNext}" th:href="@{${page.url}(page=${page.paginaActual})}">Siguiente</a>
+        </li>
+        <li class="page-item" th:class="${page.last ? 'page-item disabled' : 'page-item'}">
+            <span class="page-link" th:if="${page.last}">Ultimo</span>
+            <a class="page-link" th:if="${not page.last}" th:href="@{${page.url}(page=${page.totalPaginas-1})}">Ultimo</a>
+        </li>
+    </ul>
+</nav>
+
+<th:block th:fragment="footer">
+    <footer>
+        <p>Buscador avanzado de Películas por clichés - 2024</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</th:block>
+</html>

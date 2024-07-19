@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <div th:insert="components/fragments :: head"></div>
+
+</head>
+<body>
+<header>
+    <!-- Navbar content puesto con el fragments -->
+    <div th:insert="~{components/fragments :: nav_bar_cruds}"></div>
+</header>
+
+
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">Email y contraseña inválidos..</div>
+            </div>
+            <div th:if="${param.logout}">
+                <div class="alert alert-success">Has cerrado sesión.</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">¡Haz login en buscatupeli!</h3>
+                </div>
+                <div class="card-body">
+                    <form
+                            method="post"
+                            th:action="@{/login}"
+                            class="form-horizontal"
+                            role="form"
+                    >
+                        <div class="mb-3">
+                            <label for="username" class="control-label">Email *</label>
+                            <input type="text"
+                                   id="username"
+                                   name="username"
+                                   class="form-control"
+                                   placeholder="Email"
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="control-label">Contraseña *</label>
+                            <input type="password"
+                                   id="password"
+                                   name="password"
+                                   class="form-control"
+                                   placeholder="Contraseña"
+                            />
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <span> ¿No te has registrado aún?
+                            <a th:href="@{/register}"> Regístrate aquí</a>
+                        </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="components/fragments :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de película</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/detail.css" media="screen" />
+
+    <div th:insert="components/fragments :: head"></div>
+
+</head>
+<body>
+<header>
+    <!-- Navbar content puesto con el fragments -->
+    <div th:insert="~{components/fragments :: nav_bar_cruds}"></div>
+</header>
+
+
+<div class="recuadro">
+    <div class="movie-image">
+        <img class="responsive-image" th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.posterPath}}" alt="Imagen de la película">
+        <div>
+            <span th:each="genreName : ${genreNames}" class="badge rounded-pill bg-secondary" style="font-size: 15px; margin-top: 10px; margin-right: 10px;" th:text="${genreName}"></span>
+        </div>
+        <br>
+        <div>
+            <h4>Fecha de lanzamiento: <span th:text="${movie.releaseDate}"></span></h4>
+        </div>
+    </div>
+    <div class="movie-details">
+        <h1 th:text="${movie.title}">Título de la película</h1>
+        <p th:text="${movie.overview}">Descripción de la película</p>
+        <h2 class="mt-3">Clichés</h2>
+        <div th:if="${#lists.isEmpty(tropes)}">
+            <p>Aún no hay clichés para esta película ¡añade tú el primero!</p>
+        </div>
+        <div th:each="movieTrope : ${tropes}" class="trope-container" th:unless="${#lists.isEmpty(tropes)}">
+            <span class="badge rounded-pill bg-success" th:text="${movieTrope.trope.name} + '   |   ' + ${movieTrope.trope.description} + '   |   Votos: ' + ${movieTrope.voteCount}">Nombre del trope | Descripción | Votos</span>
+
+            <div class="vote-icons">
+                <form method="post" th:action="@{/vote}">
+                    <input type="hidden" name="tropeId" th:value="${movieTrope.trope.id}" />
+                    <input type="hidden" name="movieId" th:value="${movie.id}" />
+                    <input type="hidden" name="voteValue" value="1" />
+                    <input type="submit" value="👍" />
+                </form>
+                <form method="post" th:action="@{/vote}">
+                    <input type="hidden" name="tropeId" th:value="${movieTrope.trope.id}" />
+                    <input type="hidden" name="movieId" th:value="${movie.id}" />
+                    <input type="hidden" name="voteValue" value="-1" />
+                    <input type="submit" value="👎" />
+                </form>
+            </div>
+        </div>
+        <div class="movie-image">
+            <h2>Imágen de fondo ampliable</h2>
+            <img id="moviePoster" class="small-image" th:src="@{'https://image.tmdb.org/t/p/original' + ${movie.backdropPath}}" alt="Imagen de fondo" onclick="resizeImage()">
+        </div>
+        <div class="accordion" id="genreAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Añadir nuevo cliché a la película
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#genreAccordion">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div th:each="genre : ${allGenres}" class="col">
+                                <h2 th:text="${genre.name}"></h2>
+                                <div class="genre-trope-container" th:each="trope : ${genre.tropes}">
+                                    <span class="badge rounded-pill bg-info text-dark" th:text="${trope.name}"></span>
+                                    <form method="post" th:action="@{/propose/trope}">
+                                        <input type="hidden" name="tropeId" th:value="${trope.id}" />
+                                        <input type="hidden" name="movieId" th:value="${movie.id}" />
+                                        <input type="submit" value="👍" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Cambio de imagen pequeña a imagen grande -->
+<script>
+    function resizeImage() {
+        var image = document.getElementById('moviePoster');
+        if (image.className === "small-image") {
+            image.className = "large-image";
+        } else {
+            image.className = "small-image";
+        }
+    }
+</script>
+
+<div th:insert="components/fragments :: footer"></div>
+</body>
+</html>

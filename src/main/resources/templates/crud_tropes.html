@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title>CRUD Clichés</title>
+    <div th:insert="components/fragments :: head"></div>
+
+    <link rel="stylesheet" type="text/css" href="/css/crudtropes.css" media="screen" />
+
+</head>
+<body>
+<header>
+    <!-- Navbar content puesto con el fragments -->
+    <div th:insert="~{components/fragments :: nav_bar_cruds}"></div>
+</header>
+
+<div class="container">
+    <h1 class="mb-3 animate__animated animate__jello">Listado de clichés por géneros</h1>
+
+    <div th:each="genre:${listGenres}">
+        <button class="btn btn-custom" type="button" data-bs-toggle="collapse" th:data-bs-target="'#collapse'+${genre.id}" aria-expanded="false" aria-controls="collapseExample">
+            <h2 th:text="${genre.name}"></h2>
+        </button>
+        <div class="collapse card-custom" th:id="'collapse'+${genre.id}">
+            <div class="card card-body">
+                <!-- Formulario para añadir nuevo Trope -->
+                <form th:action="@{/tropes}" method="post" class="mb-3">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="hidden" th:name="genreId" th:value="${genre.id}" />
+                    <label for="newTropeName">Nombre del cliché:</label>
+                    <input type="text" id="newTropeName" name="name" required/>
+                    <label for="newTropeDescription">Descripción del cliché:</label>
+                    <input type="text" id="newTropeDescription" name="description" required/>
+                    <button type="submit" class="btn btn-success">Agregar Nuevo cliché</button>
+                </form>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id del cliché</th>
+                        <th scope="col">Nombre del cliché</th>
+                        <th scope="col">Descripción del cliché</th>
+                        <th scope="col">Modificar cliché</th>
+                        <th scope="col">Borrar cliché</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="trope : ${genre.tropes}">
+                        <!-- Mostrar detalles del Trope -->
+                        <td th:text="${trope.id}"></td>
+                        <td th:text="${trope.name}"></td>
+                        <td th:text="${trope.description}"></td>
+                        <td>
+                            <!-- Botón para mostrar/ocultar formulario de edición -->
+                            <button class="btn btn-primary" th:data-trope-id="${trope.id}" onclick="toggleEditForm('editForm' + this.dataset.tropeId);">Modificar cliché</button>
+                        </td>
+                        <!-- Formulario para editar un Trope (inicialmente oculto) -->
+                        <td th:id="'editForm'+${trope.id}" style="display:none;">
+                            <form th:action="@{/tropes/update/{id}(id=${trope.id})}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <label for="editTropeName">Nombre del Trope:</label>
+                                <input type="text" id="editTropeName" name="name" th:value="${trope.name}" required/>
+                                <br>
+                                <label for="editTropeDescription">Descripción del Trope:</label>
+                                <input type="text" id="editTropeDescription" name="description" th:value="${trope.description}" required/>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </form>
+                        </td>
+                        <!-- Formulario para eliminar un Trope -->
+                        <td>
+                            <form th:action="@{/tropes/delete/{id}(id=${trope.id})}" method="post"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres borrar este cliché?')">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit" class="btn btn-danger" >Eliminar cliché </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="centered-content">
+    <h2>Obtener nuevos géneros de películas y de clichés desde la API TMDb</h2>
+    <a href="/tropes/geNewGenres" class="btn btn-danger mb-3" onclick="return confirm('¡CUIDADO! Esto podría causar lentitud en la página e incluso caídas de la misma. Ten en cuenta que este proceso puede tardar, por lo que es recomendable hacerlo mientras la web no se usa o hay poca actividad.')">Obtener nuevos géneros</a>
+</div>
+
+<!-- JavaScript para mostrar u ocultar los formularios de edición -->
+<script>
+    function toggleEditForm(formId) {
+        var editForm = document.getElementById(formId);
+        if (editForm.style.display === "none") {
+            editForm.style.display = "table-cell";
+        } else {
+            editForm.style.display = "none";
+        }
+    }
+</script>
+
+<div th:insert="components/fragments :: footer"></div>
+</body>
+</html>

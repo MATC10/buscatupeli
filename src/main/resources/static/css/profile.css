@@ -1,0 +1,6 @@
+.profile-image {
+    width: 200px; /*Ajusta el tamaño de la imagen*/
+    height: auto;
+    border-radius: 50%; /*Hace que la imagen sea redonda*/
+    object-fit: cover; /*la imagen escala para cubrir entero el contenedor*/
+}

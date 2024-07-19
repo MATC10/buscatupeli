@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <!--El script del boostrap puesto con el fragments-->
+    <div th:insert="components/fragments :: head"></div>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" th:fragment="header">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">BuscaTuPeli</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+<br />
+<br />
+<br />
+<div class="container">
+    <div class="row col-md-8 offset-md-2">
+        <div class="card">
+            <div th:if="${param.success}">
+                <div class="alert alert-info">¡Te has registrado correctamente en Buscatupeli!
+                    </div>
+            </div>
+            <div class="card-header">
+                <h2 class="text-center">Registro</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" role="form" th:action="@{/register/save}" th:object="${user}">
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Nickname</label>
+                        <input class="form-control"
+                               id="nickname"
+                               name="nickname"
+                               placeholder="Introduce nickname"
+                               th:field="*{nickname}"
+                               type="text"
+                        />
+                        <p th:errors="*{nickname}" class="text-danger"
+                           th:if="${#fields.hasErrors('nickname')}">
+                        </p>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label">Email</label>
+                        <input class="form-control"
+                               id="email"
+                               name="email"
+                               placeholder="Introduce dirección de email"
+                               th:field="*{email}"
+                               type="email"
+                        />
+                        <p th:errors="*{email}" class="text-danger"
+                           th:if="${#fields.hasErrors('email')}">
+                        </p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Password</label>
+                        <input class="form-control"
+                               id="password"
+                               name="password"
+                               placeholder="Introduce password"
+                               th:field="*{password}"
+                               type="password"
+                        />
+                        <p th:errors="*{password}" class="text-danger"
+                           th:if="${#fields.hasErrors('password')}">
+                        </p>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <button class="btn btn-primary" type="submit">Registro</button>
+                        <span>¿Ya te has registrado? <a href="/" th:href="@{/login}">Haz Login aquí</a></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="components/fragments :: footer"></div>
+</body>
+</html>

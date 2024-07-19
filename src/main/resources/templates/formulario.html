@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Movies</title>
+    <!--El script del boostrap puesto con el fragments-->
+    <div th:insert="components/fragments :: head"></div>
+</head>
+<body>
+<header>
+
+    <!-- Navbar content puesto con el fragments -->
+    <div th:insert="~{components/fragments :: nav_bar_cruds}"></div>
+</header>
+
+
+<div class="container">
+    <h1 class="mb-3 animate__animated animate__jello">Listado de películas</h1>
+
+    <a href="/crud/movies/add" class="btn btn-primary mb-3">Añadir películas</a>
+
+
+    <form th:action="${movie.id != 0} ? @{/crud/movies/postupdate} : @{/crud/movies/postadd}"
+          method="post" enctype="multipart/form-data" th:object="${movie}">
+        <div class="container">
+            <div class="row">
+                <!--Guardamos el id de la película-->
+                <input type="hidden" class="form-control" th:field="*{id}">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="title">Título</label>
+                        <input type="text" class="form-control" name="title" id="title" th:field="*{title}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="originalTitle">Título Original</label>
+                        <input type="text" class="form-control" name="originalTitle" id="originalTitle" th:field="*{originalTitle}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="originalLanguage">Idioma Original</label>
+                        <select class="form-control" name="originalLanguage" id="originalLanguage" th:field="*{originalLanguage}" required>
+                            <option value="en">en</option>
+                            <option value="de">de</option>
+                            <option value="es">es</option>
+                            <option value="no">no</option>
+                            <option value="ja">ja</option>
+                            <option value="ko">ko</option>
+                            <option value="zh">zh</option>
+                            <option value="mn">mn</option>
+                            <option value="ar">ar</option>
+                            <option value="fr">fr</option>
+                            <option value="hi">hi</option>
+                            <option value="da">da</option>
+                            <option value="it">it</option>
+                            <option value="pl">pl</option>
+                            <option value="id">id</option>
+                            <option value="uk">uk</option>
+                            <option value="te">te</option>
+                            <option value="tl">tl</option>
+                            <option value="th">th</option>
+                            <option value="ru">ru</option>
+                            <option value="sv">sv</option>
+                            <option value="nl">nl</option>
+                            <option value="is">is</option>
+                            <option value="pt">pt</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="releaseDate">Fecha de Lanzamiento</label>
+                        <input type="date" class="form-control" name="releaseDate" id="releaseDate" th:field="*{releaseDate}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="popularity">Popularidad</label>
+                        <input type="number" step="0.01" class="form-control" name="popularity" id="popularity" th:field="*{popularity}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="voteAverage">Promedio de Votos</label>
+                        <input type="number" step="0.01" class="form-control" name="voteAverage" id="voteAverage" th:field="*{voteAverage}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="voteCount">Conteo de Votos</label>
+                        <input type="number" class="form-control" name="voteCount" id="voteCount" th:field="*{voteCount}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="overview">Resumen</label>
+                        <textarea class="form-control" name="overview" id="overview" rows="3" th:field="*{overview}" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="posterPath">Ruta del Poster</label>
+                        <input type="text" class="form-control" name="posterPath" id="posterPath" th:field="*{posterPath}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="backdropPath">Ruta de la Imagen de Fondo</label>
+                        <input type="text" class="form-control" name="backdropPath" id="backdropPath" th:field="*{backdropPath}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adult">Adulto (0 no es para adultos / 1 es para adultos)</label>
+                        <select class="form-control" name="adult" id="adult" th:field="*{adult}">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Géneros</label>
+                        <div th:each="genre : ${genres}">
+                            <input type="checkbox" th:id="${'genre' + genre.id}" th:name="genres" th:value="${genre.id}" th:checked="${movie.genres.contains(genre)}">
+                            <label th:for="${'genre' + genre.id}" th:text="${genre.name}"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" value="Guardar" class="btn btn-success mb-3">
+        </div>
+    </form>
+
+
+
+
+    <!--ESTE JS ES PARA QUE EN EL "formulario" de movies me obligue a seleccionar un género -->
+    <script>document.querySelector('form').addEventListener('submit', function(e) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    var checkedOne = Array.prototype.slice.call(checkboxes).some(x => x.checked);
+    if (!checkedOne) {
+    e.preventDefault();
+    alert('Por favor, selecciona al menos un género.');
+    }
+    });
+    </script>
+
+    <div th:insert="components/fragments :: footer"></div>
+</body>
+</html>

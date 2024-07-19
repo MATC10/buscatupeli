@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de usuario</title>
+    <link rel="stylesheet" type="text/css" href="/css/profile.css" media="screen" />
+    <div th:insert="components/fragments :: head"></div>
+
+</head>
+<body>
+<header>
+    <!-- Navbar content puesto con el fragments -->
+    <div th:insert="~{components/fragments :: nav_bar_cruds}"></div>
+</header>
+
+<div class="container mt-5">
+    <h1 class="text-center">¡Bienvenido, <span th:text="${user.nickname}"></span>!</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="POST" th:action="@{/subirarchivo}" enctype="multipart/form-data" class="mt-4">
+                <div class="mb-3">
+                    <label for="file" class="form-label">Selecciona una imagen de perfil</label>
+                    <input type="file" class="form-control" name="file" id="file">
+                </div>
+                <button type="submit" class="btn btn-primary">Subir imagen de perfil</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6 text-center">
+            <img class="profile-image img-fluid rounded-circle" th:if="${user.image != null}" th:src="@{'/uploads/' + ${user.image}}" alt="Imagen de perfil" /> <!--si no es null la imagen, se muestra-->
+        </div>
+    </div>
+</div>
+
+<div th:insert="components/fragments :: footer"></div>
+</body>
+</html>

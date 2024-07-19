@@ -1,0 +1,151 @@
+/*Estilos generales*/
+h1, h2, h3 {
+    text-align: center;
+}
+
+/*Contenedor grid*/
+#grid-novedades {
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    width: 80%;
+    grid-template-columns: repeat(4, 25%);
+    grid-column-gap: 25px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+/*Titulo de la página*/
+#titulo-novedades {
+    grid-column: 1/5;
+}
+
+/*Estilo de cada una de las cajas*/
+.grid-item {
+    display: grid;
+    grid-template-areas: "imagen" "titulo-autor" "descripcion" "otros-datos";
+    box-shadow: 10px 10px 10px #C9C9C9;
+    border-radius: 15px;
+    border: 1px solid #333333;
+    padding: 15px;
+    margin: 15px 0;
+    height: auto;
+    place-items: center;
+}
+
+.grid-item:hover {
+    transform: scale(1.05);
+}
+
+.titulo-autor h3 > a {
+    color: black;
+}
+
+.grid-item > img {
+    grid-area: imagen;
+    height: 360px;
+    max-height: 360px;
+    border: 1px solid black;
+    margin-bottom: 10px;
+    max-width: 100%;
+}
+
+.titulo-autor {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    grid-area: titulo-autor;
+    height: 80px;
+    max-height: 100px;
+    padding-bottom: 10px;
+    min-height: 50px;
+    overflow: hidden;
+}
+
+.nav-link-bold {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.label-large {
+    font-size: 20px;
+}
+
+.button-margin {
+    margin-left: 15px;
+}
+
+.descripcion {
+    grid-area: descripcion;
+    display: flex;
+    align-content: flex-end;
+    max-height: 210px;
+    min-height: 100px;
+    overflow: hidden;
+    position: relative; /* Posiciona el pseudo-elemento respecto a este contenedor */
+    height: 3.6em; /* Ajusta esto al número de líneas que quieras mostrar (1.2em por línea suele ser un buen punto de partida) */
+}
+
+.descripcion::after {
+    content: "..."; /* Los puntos suspensivos que se mostrarán */
+    position: absolute; /* Posiciona los puntos suspensivos al final del contenedor */
+    bottom: 0;
+    right: 0;
+    padding: 0 20px 1px 45px; /* Ajusta el padding para que se ajuste a tu diseño */
+    background: linear-gradient(to right, transparent, white 50%); /* Fondo degradado para suavizar el corte del texto */
+}
+
+#b{
+    height: 20vh
+}
+
+#a{
+    width: 70%
+}
+
+/*Caja que contiene los autores*/
+.recuadro {
+    max-width: 90%;
+    box-shadow: 0 0 4px #c9c9c9;
+    border-radius: 15px;
+    margin: 3%;
+    padding: 1%;
+}
+
+@media (max-width: 1280px) and (min-width: 855px) {
+
+    #titulo-novedades {
+        grid-column: 1/5;
+    }
+
+    #grid-novedades {
+        margin: 0 auto;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .grid-item {
+        width: 44%;
+    }
+}
+
+@media (max-width: 855px) { /*ajustamos el tamaño de la imagen según la pantalla*/
+
+    #titulo-novedades {
+        grid-column: 1/5;
+    }
+
+    #grid-novedades {
+        margin: 10px;
+        /*padding: 0;*/
+        display: flex;
+        flex-wrap: wrap;
+        padding: 15px;
+    }
+
+    .grid-item {
+        width: 90%;
+    }
+}
